@@ -16,7 +16,7 @@
 require __DIR__.'/../raidtrain.php';
 
 
-// Optionally aliasing the class so we don't have to refer to it as org\etrusci\raidtrain\RaidTrain
+// Optionally aliasing the class so we don't have to refer to it as \org\etrusci\raidtrain\RaidTrain
 use org\etrusci\raidtrain\RaidTrain;
 
 
