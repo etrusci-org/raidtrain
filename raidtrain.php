@@ -94,6 +94,7 @@ class RaidTrain
                 'start' => $start_str,
                 'end' => $end_str,
                 'dj' => $dj,
+                'is_active' => ($start_diff->invert == 1 && $end_diff->invert == 0) ? true : false,
                 'diff_start_human' => $this->format_diff($start_diff),
                 'diff_start' => [
                     'd' => $start_diff->days,
@@ -116,7 +117,7 @@ class RaidTrain
         $this->event_data = [
             'name' => $this->name,
             'time_zone' => $this->time_zone,
-            'time_now' => $now,
+            'time_now' => $now->format('Y-m-d H:i:s'),
             'slot' => $slot,
         ];
     }
