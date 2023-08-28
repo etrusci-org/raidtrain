@@ -29,7 +29,7 @@ $App = new RaidTrain(
 
 
 // Get the event data as json
-$event_data = $App->get_event_data(as_json: true);
+$event = $App->get_event_data(as_json: true);
 
 
 // Set output header
@@ -37,4 +37,4 @@ header('Content-Type: application/json; charset=utf-8');
 
 
 // Print/output json event data
-print($event_data);
+print($event);
