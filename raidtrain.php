@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace org\etrusci\raidtrain;
 use DateTime;
 use DateTimeZone;
+use DateInterval;
 
 
 
@@ -13,6 +14,8 @@ class RaidTrain
     public string $name;
     public string $time_zone;
     public string|false $slot_file = './slot.txt';
+    public string $diff_tpl_future = 'in %s';
+    public string $diff_tpl_past = '%s ago';
     private null|array $slot_data = null;
 
 
@@ -37,6 +40,21 @@ class RaidTrain
         }
 
         return $this->slot_data;
+    }
+
+
+    public function format_diff(DateInterval $interval): string
+    {
+        if ($interval->days > 0) {
+            $dump = $interval->format('%ad %hh %im %ss');
+        }
+        else {
+            $dump = $interval->format('%hh %im %ss');
+        }
+
+        $dump = sprintf((!$interval->invert) ? $this->diff_tpl_future : $this->diff_tpl_past, $dump);
+
+        return (!empty($dump)) ? $dump : 'error';
     }
 
 
@@ -71,43 +89,29 @@ class RaidTrain
             $start_diff = $now->diff($start);
             $end_diff = $now->diff($end);
 
-
             $data[$group][] = [
                 'start' => $start_str,
                 'end' => $end_str,
                 'dj' => $dj,
-                'diff_start' => $start_diff,
-                'diff_end' => $end_diff,
+                'diff_start_human' => $this->format_diff($start_diff),
+                'diff_start' => [
+                    'd' => $start_diff->days,
+                    'h' => $start_diff->h,
+                    'm' => $start_diff->i,
+                    's' => $start_diff->s,
+                    'is_past' => boolval($start_diff->invert),
+                ],
+                'diff_end_human' => $this->format_diff($end_diff),
+                'diff_end' => [
+                    'd' => $end_diff->days,
+                    'h' => $end_diff->h,
+                    'm' => $end_diff->i,
+                    's' => $end_diff->s,
+                    'is_past' => boolval($end_diff->invert),
+                ],
             ];
         }
 
         $this->slot_data = $data;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ------------------------------------------------------------------------------------------------
-// Test
-
-$App = new RaidTrain(
-    name: 'Foo Event',
-    time_zone: 'Europe/Zurich', # for valid timezone values see https://www.php.net/manual/en/timezones.php
-    slot_file: './slot.example.txt',
-);
-
-// print_r($App);
-
-$foo = $App->get_slot_data();
-// $foo = $App->get_slot_data(as_json: true);
-print_r($foo);
