@@ -3,11 +3,11 @@
 // This example shows how you can output the slot data in the JSON format.
 //
 // Webbrowser:
-// 1. Copy the raidtrain/ directory to your webserver.
-// 2. Navigate to this example page in a webbrowser.
+// 1. Copy the raidtrain/ directory to your webserver
+// 2. Navigate to this example page in a webbrowser
 //
 // Commandline:
-// 1. cd path/to/raidtrain/example.
+// 1. cd path/to/raidtrain/example
 // 2. php usage-json-output.php
 // ------------------------------------------------------------------------------------------------
 
