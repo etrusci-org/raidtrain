@@ -46,10 +46,10 @@ class RaidTrain
     public function format_diff(DateInterval $interval): string
     {
         if ($interval->days > 0) {
-            $dump = $interval->format('%ad %hh %im %ss');
+            $dump = $interval->format('%ad %hh %im');
         }
         else {
-            $dump = $interval->format('%hh %im %ss');
+            $dump = $interval->format('%hh %im');
         }
 
         $dump = sprintf((!$interval->invert) ? $this->diff_tpl_future : $this->diff_tpl_past, $dump);
