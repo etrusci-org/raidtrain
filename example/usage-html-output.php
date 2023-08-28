@@ -39,16 +39,18 @@ $event = $App->get_event_data();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.0-alpha1/css/pico.min.css">
     <style>
         .past { color: gray; }
         .future { color: green; }
         .day-header { font-size: 2rem; }
+        body { line-height: 1.5; font-family: sans-serif; background-color: black; color: silver; padding: 1rem; }
+        table { border-collapse: collapse; text-align: left; }
+        th, td { vertical-align: top; padding: .5rem; }
+        tr.active td { border: 1px dotted yellow; }
     </style>
     <title>raidtrain example usage-html-output</title>
 </head>
 <body>
-
     <h1><?php print($App->name) ?></h1>
     <p>All times = <?php print($App->time_zone); ?></p>
 
@@ -77,7 +79,7 @@ $event = $App->get_event_data();
                 foreach ($day_slots as $slot)
                 {
                     printf('
-                        <tr>
+                        <tr class="%8$s">
                             <td>
                                 %2$s<br>
                                 <span class="%6$s">%4$s</span>
@@ -95,6 +97,7 @@ $event = $App->get_event_data();
                         $slot['diff_end_human'],
                         ($slot['diff_start']['is_past']) ? 'past' : 'future',
                         ($slot['diff_end']['is_past']) ? 'past' : 'future',
+                        ($slot['is_active']) ? 'active' : '',
                     );
                 }
             }

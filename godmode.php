@@ -1,27 +1,32 @@
 <?php
 declare(strict_types=1);
 
+// ------------------------------------------------------------------------------------------------
+
+
+const SLOT_FILE = './example/slot.txt'; # must exist and be writable by php/webserver
+const PW_FILE = '.godmode-pw-example'; # optimally move this file outside the public webserver root
+
+
+// ------------------------------------------------------------------------------------------------
+
+
 session_start();
 
 
-// ------------------------------------------------------------------------------------------------
-
-
-const SLOT_FILE = './example/slot.txt'; # must exist and be writable
-const PW_FILE = '.godmode-pw'; # optimally move this file outside the public webserver root
-
-
-// ------------------------------------------------------------------------------------------------
-
-
-if (isset($_POST['pw'])) {
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header('Location: ?');
+}
+else if (isset($_POST['pw'])) {
     $local_hash = trim(file_get_contents(PW_FILE));
 
-    if (password_verify(trim($_POST['pw']), $local_hash)) {
-        $_SESSION['godmode'] = true;
+    if (!password_verify(trim($_POST['pw']), $local_hash)) {
+        session_destroy();
+        header('Location: ?');
     }
     else {
-        session_destroy();
+        $_SESSION['godmode'] = true;
     }
 }
 
@@ -29,14 +34,14 @@ if (isset($_POST['pw'])) {
 if (!isset($_SESSION['godmode'])) {
     print('
     <form action="?" method="post">
-        <input type="password" name="pw">
-        <input type="submit" value="do not push this button">
+        <label>
+            Password:
+            <input type="password" name="pw" required>
+        </label>
+        <input type="submit" value="login">
     </form>');
     exit(1);
 }
-
-
-// ------------------------------------------------------------------------------------------------
 
 
 if (!is_file(SLOT_FILE) || !is_writable(SLOT_FILE)) {
@@ -46,7 +51,6 @@ if (!is_file(SLOT_FILE) || !is_writable(SLOT_FILE)) {
 
 if (isset($_POST['slot_data'])) {
     $slot_data = trim($_POST['slot_data']);
-
     file_put_contents(SLOT_FILE, $slot_data, flags: LOCK_EX);
 }
 
@@ -60,14 +64,22 @@ $slot_data = file_get_contents(SLOT_FILE);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.0-alpha1/css/pico.min.css">
+    <style>
+        body { line-height: 1.5; font-family: sans-serif; font-size: 1rem; background-color: #111; color: #ccc; padding: 1rem; }
+        textarea { font-family: monospace; font-size: 1rem; background-color: #222; color: #ccc; border: 1px solid #444; padding: .5rem; width: 100%; max-height: 60vh; }
+        input { cursor: pointer; font-family: monospace; font-size: 1rem; background-color: #222; color: #ccc; border: 1px solid #444; padding: .5rem; }
+        input:hover, input:focus { background-color: #333; color: #fff; }
+    </style>
     <title>raidtrain godmode</title>
 </head>
 <body>
-    <h1>edit slots</h1>
+    <h1>Edit Slot Data</h1>
     <form action="?" method="post">
-        <textarea name="slot_data" rows="20"><?php print(htmlspecialchars($slot_data)); ?></textarea>
+        <p>
+            <textarea name="slot_data" cols="50" rows="35" required><?php print(htmlspecialchars($slot_data)); ?></textarea>
+        </p>
         <input type="submit" value="save changes">
+        <input type="submit" name="logout" value="logout">
     </form>
 </body>
 </html>
