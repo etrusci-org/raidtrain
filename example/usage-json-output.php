@@ -1,6 +1,6 @@
 <?php
 // ------------------------------------------------------------------------------------------------
-// This example shows how you can output the slot data in the JSON format.
+// This example shows how you can output the event data in the JSON format.
 //
 // Webbrowser:
 // 1. Copy the raidtrain/ directory to your webserver
@@ -28,13 +28,13 @@ $App = new RaidTrain(
 );
 
 
-// Get the slot data as json
-$slot_data = $App->get_slot_data(as_json: true);
+// Get the event data as json
+$event_data = $App->get_event_data(as_json: true);
 
 
 // Set output header
 header('Content-Type: application/json; charset=utf-8');
 
 
-// Print/output json slot data
-print($slot_data);
+// Print/output json event data
+print($event_data);

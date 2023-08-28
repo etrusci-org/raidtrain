@@ -16,7 +16,7 @@ class RaidTrain
     public string|false $slot_file = './slot.txt';
     public string $diff_tpl_future = 'in %s';
     public string $diff_tpl_past = '%s ago';
-    private null|array $slot_data = null;
+    private null|array $event_data = null;
 
 
     public function __construct(string $name, string $time_zone, string $slot_file)
@@ -27,19 +27,19 @@ class RaidTrain
 
         date_default_timezone_set($this->time_zone);
 
-        $this->load_slot_data();
+        $this->bake_event_data();
     }
 
 
-    public function get_slot_data(bool $as_json = false): array|string
+    public function get_event_data(bool $as_json = false): array|string
     {
-        if (!$this->slot_data) return [];
+        if (!$this->event_data) return [];
 
         if ($as_json) {
-            return json_encode($this->slot_data, flags: JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+            return json_encode($this->event_data, flags: JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
         }
 
-        return $this->slot_data;
+        return $this->event_data;
     }
 
 
@@ -58,13 +58,14 @@ class RaidTrain
     }
 
 
-    private function load_slot_data(): void
+    private function bake_event_data(): void
     {
         $dump = file($this->slot_file, flags: FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
         $tz = new DateTimeZone($this->time_zone);
         $now = new DateTime('now', $tz);
-        $data = [];
+
+        $slot = [];
 
         foreach ($dump as $k => $v) {
             if (str_starts_with($v, '#')) {
@@ -89,7 +90,7 @@ class RaidTrain
             $start_diff = $now->diff($start);
             $end_diff = $now->diff($end);
 
-            $data[$group][] = [
+            $slot[$group][] = [
                 'start' => $start_str,
                 'end' => $end_str,
                 'dj' => $dj,
@@ -112,6 +113,11 @@ class RaidTrain
             ];
         }
 
-        $this->slot_data = $data;
+        $this->event_data = [
+            'name' => $this->name,
+            'time_zone' => $this->time_zone,
+            'time_now' => $now,
+            'slot' => $slot,
+        ];
     }
 }
