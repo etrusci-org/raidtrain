@@ -1,4 +1,5 @@
 <?php
+// Also see README.md
 // ------------------------------------------------------------------------------------------------
 // This example shows how you can output the event data in the HTML format.
 //

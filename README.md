@@ -2,21 +2,74 @@
 
 Quickly create a time slot overview webpage for your Twitch raid train event and such activities.
 
-**Still a bit work in progress! Do not use yet.**
-
 ---
 
 ## Dependencies
 
-- [Webserver](https://en.wikipedia.org/wiki/Web_server) with [PHP](https://php.net) `>= 8.1.20`
-- Basic knowledge in HTML
-- Basic knowledge how to script small stuff in PHP
+- [PHP](https://php.net) `>= 8.1.20`
+- [Webserver](https://en.wikipedia.org/wiki/Web_server)
+
+---
+
+## Motivation
+
+The purpose is to present a list of event times in the event timezone. Users will be relieved from the task of manually converting these times to their current timezones in order to comprehend when a particular time slot begins. This approach eliminates the need for users to actively select or be aware of their specific timezones.  
+Additionally, it should be easy for administrators to create/update the time slots. Refer to the **Slots Data File** section below for more details on creating and updating these time slots.
+
+Example screenshot:  
+![screenshot](./screenshot.png)
+
+---
+
+## Slots Data File
+
+To create a time slots file for your event, simply create a new text file.
+
+**Enter one time slot per line**, the format is:
+
+```text
+start timestamp | end timestamp | dj name or empty if slot is free
+```
+
+```text
+YYYY-MM-DD HH:MM | YYYY-MM-DD HH:MM | Any Text or Empty
+```
+
+Example:
+
+```text
+2023-08-27 20:00 | 2023-08-27 21:00 | DJ Flash
+2023-08-27 22:00 | 2023-08-27 23:00 | DJ Bang
+2023-08-27 23:00 | 2023-08-28 00:00 | DJ Boom
+2023-08-28 00:00 | 2023-08-28 01:00 | DJ Mega
+2023-08-28 01:00 | 2023-08-28 02:00 | DJ Fire
+```
+
+**Only enter 24-clock format**. Remember that `00:00` means "start of the day" and therefore it'll be the next day - see:
+
+```text
+2023-08-27 23:00 | 2023-08-28 00:00 | DJ Boom
+```
+
+**When done**, save the file and save it on in- or outside the document root of your webserver. Then adjust the path when you initialize the RaidTrain class.
+
+**Further...**
+
+- Lines that are empty or start with `#` are ignored so you can add notes.
+- You can leave the DJ name empty after the last separator (`|`) in case the slot is still free to take.
+- Lines that have not 3 parts - or in other words - are not 2 separators (`|`), are ignored.
 
 ---
 
 ## Basic Usage
 
-For functional examples [see the example directory](./example/) (code has comments).
+There are two functional examples to read through and try out:
+- [usage-html-output.php](./example/usage-html-output.php)
+- [usage-json-output.php](./example/usage-json-output.php)
+
+
+Here's a rundown of the very basics:
+
 
 ```php
 // Require/include the class file
@@ -115,8 +168,7 @@ The event data will have the following structure:
                     "s": 26,
                     "is_past": false
                 }
-            },
-            // ...more...
+            }
         ],
         "2023-08-30": [
             {
@@ -163,54 +215,6 @@ The event data will have the following structure:
                     "is_past": false
                 }
             }
-        ],
-        "2024-03-13": [
-            {
-                "start": "2024-03-13 12:00",
-                "end": "2024-03-14 06:00",
-                "dj": "DJ Special|Name",
-                "is_active": false,
-                "diff_start_human": "in 197d 11h 32m",
-                "diff_start": {
-                    "d": 197,
-                    "h": 11,
-                    "m": 32,
-                    "s": 26,
-                    "is_past": false
-                },
-                "diff_end_human": "in 198d 5h 32m",
-                "diff_end": {
-                    "d": 198,
-                    "h": 5,
-                    "m": 32,
-                    "s": 26,
-                    "is_past": false
-                }
-            }
-        ],
-        "2026-05-01": [
-            {
-                "start": "2026-05-01 00:00",
-                "end": "2026-05-02 00:00",
-                "dj": null,
-                "is_active": false,
-                "diff_start_human": "in 975d 23h 32m",
-                "diff_start": {
-                    "d": 975,
-                    "h": 23,
-                    "m": 32,
-                    "s": 26,
-                    "is_past": false
-                },
-                "diff_end_human": "in 976d 23h 32m",
-                "diff_end": {
-                    "d": 976,
-                    "h": 23,
-                    "m": 32,
-                    "s": 26,
-                    "is_past": false
-                }
-            }
         ]
     }
 }
@@ -218,57 +222,21 @@ The event data will have the following structure:
 
 ---
 
-## Slots Data File
-
-To create a time slots file for your event, simply create a new text file.
-
-**Enter one time slot per line**, the format is:
-
-```text
-start timestamp | end timestamp | dj name or empty if slot is free
-```
-
-```text
-YYYY-MM-DD HH:MM | YYYY-MM-DD HH:MM | Any Text or Empty
-```
-
-Example:
-
-```text
-2023-08-27 20:00 | 2023-08-27 21:00 | DJ Flash
-2023-08-27 22:00 | 2023-08-27 23:00 | DJ Bang
-2023-08-27 23:00 | 2023-08-28 00:00 | DJ Boom
-2023-08-28 00:00 | 2023-08-28 01:00 | DJ Mega
-2023-08-28 01:00 | 2023-08-28 02:00 | DJ Fire
-```
-
-**Only enter 24-clock format**. Remember that `00:00` means "start of the day" and therefore it'll be the next day - see:
-
-```text
-2023-08-27 23:00 | 2023-08-28 00:00 | DJ Boom
-```
-
-**When done**, save the file and save it on in- or outside the document root of your webserver. Then adjust the path when you initialize the RaidTrain class.
-
-**Further...**
-
-- Lines that are empty or start with `#` are ignored so you can add notes.
-- You can leave the DJ name empty after the last separator (`|`) in case the slot is still free to take.
-- Lines that have not 3 parts - or in other words - are not 2 separators (`|`), are ignored.
-
----
-
 ## God Mode aka Admin
 
 The **godmode.php** file is really just a dirty example. It let's you edit the slots data file on the web.  
-If you want to use it, copy **.godmode-pw-example** and rename it to **.godmode-pw**. The example password that should already be in there, is `123`. Create your own password hash either [use my genhash tool](https://etrusci.org/tool/genhash) or PHP:
+If you want to use it, copy **.godmode-pw-example** and rename it to **.godmode-pw**. The example password that should already be in there, is `123`.
+
+Create your own password hash with either [my genhash tool](https://etrusci.org/tool/genhash) or PHP:
 
 ```php
 $myhash = password_hash(password: 'YOUR PASSWORD HERE', algo: PASSWORD_DEFAULT);
 print($myhash);
 ```
 
-Just to be safe (webservers should return 403 for dot files) you should store **.godmode-pw** outside of the public webroot of your webserver.
+You should store **.godmode-pw** outside of the public webroot of your webserver.
+
+The slots file must be readable+writable by the webserver process.
 
 Also don't forget to adjust the `SLOT_FILE` and `PW_FILE` paths in **godmode.php**.
 
