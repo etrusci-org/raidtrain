@@ -23,9 +23,7 @@ Example screenshot:
 
 ## Slots Data File
 
-To create a time slots file for your event, simply create a new text file.
-
-**Enter one time slot per line**, the format is:
+Create a new text file. **Enter one time slot per line**, the format is:
 
 ```text
 start timestamp | end timestamp | dj name or empty if slot is free
@@ -45,13 +43,11 @@ Example:
 2023-08-28 01:00 | 2023-08-28 02:00 | DJ Fire
 ```
 
-**Only enter 24-clock format**. Remember that `00:00` means "start of the day" and therefore it'll be the next day - see:
+**Enter times in the 24-clock format**. Remember that `00:00` means "start of the day" and therefore it'll be the next day - see:
 
 ```text
 2023-08-27 23:00 | 2023-08-28 00:00 | DJ Boom
 ```
-
-**When done**, save the file and save it on in- or outside the document root of your webserver. Then adjust the path when you initialize the RaidTrain class.
 
 **Further...**
 
